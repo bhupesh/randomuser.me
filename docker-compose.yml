@@ -3,7 +3,7 @@ services:
 
   node-server:
     build:
-      context: .
+      context: ./
       dockerfile: 'docker/node/Dockerfile'
     image: randomuser-node:latest
     container_name: randomuser-server

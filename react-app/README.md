@@ -2,8 +2,10 @@
 
 ## This setup uses docker
 
-Run `docker-compose up` to run this reactjs application under nodejs v16 container
+Run `docker-compose up` while being in root directory to run this application under nodejs v16 container
 
+## OR
+Run `npm run start` in `react-app` directory to start application in standalone mode if you have nodejs installed locally
 
 ## To generate production build
 ### Run `npm run build`
