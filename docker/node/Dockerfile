@@ -2,16 +2,16 @@
 FROM node:16-alpine
 
 # set working directory
-WORKDIR /var/www/html
+WORKDIR /app
 
 # add `node_modules/.bin` to $PATH
-ENV PATH /var/www/html/node_modules/.bin:$PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
-# install app dependencies
-COPY ../react-app/package.json ./
-COPY ../react-app/package-lock.json ./
+# Copy package.json
+COPY ../react-app/package*.json ./
+
+# install all node packages
 RUN npm install
-RUN npm install react-scripts --location=global
 
 # start app
 CMD ["npm", "start"]
