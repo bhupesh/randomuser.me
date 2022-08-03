@@ -7,55 +7,37 @@ import Container from 'react-bootstrap/Container';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { itemsPerPage } from './config/config';
-import { fetchUsers } from './utils/utils';
 import UserInfoRow from './components/UserInfoRow/UserInfoRow';
 import SearchUserForm from './components/SearchUserForm/SearchUserForm';
 import CountryChart from './components/CountryChart/CountryChart';
 import Pagination from './components/Pagination/Pagination';
 import './App.css';
+import { useGetRandomusersQuery } from './services/randomuser';
+
+const loadingToastId = 'loading-toast';
 
 function App() {
   /**
    * use one time only, to store initialized data, and to repopulate after
    * filter text box is cleared
    */
+  const { data, error, isLoading } = useGetRandomusersQuery();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
   const [sortConfig, setSortConfig] = useState({ direction: 'asc' });
 
-  /**
-   * Get data from randomuser.me
-   */
-  useEffect( () => {
-    const asyncFetchUsers = async () => {
-      const response = await toast.promise(
-        fetchUsers(),
-        {
-          pending: 'Fetching data...',
-          success: '',
-          error: 'Something went wrong.'
-        }
-      );
-
-      if (response.ok) {
-        const responseJson = await response.json();
-        // set initial data of users
-        setUsers(responseJson.results);
-        // set all users to filtered users as there is no filter criteria yet
-        setFilteredUsers(responseJson.results);
-      } else {
-        setErrorMessage('Something went wrong.');
-      }
-    };
-
-    asyncFetchUsers();
-  }, []);
-
-  // Once the users is populated, set it to filteredusers variable
   useEffect(() => {
+    if (!data) return;
+    setUsers([...data.results]);
+  }, [data]);
+
+  /**
+   * Whenever user's array is changed, set the filtered users that is being used for pagination
+   */
+  useEffect(() => {
+    // Once the users is populated, set it to filteredusers variable
     setFilteredUsers([...users]);
-  }, [users.length]);
+  }, [users]);
 
   /* SORT */
   React.useMemo(() => {
@@ -150,7 +132,7 @@ function App() {
   /* END PAGINATION */
 
   const deleteHandler = (email) => {
-    const idx = users.findIndex((user) => user.email === email);
+    const idx = filteredUsers.findIndex((user) => user.email === email);
     if (idx !== -1) {
       // eslint-disable-next-line
       const deletedUser = users.splice(idx, 1);
@@ -158,22 +140,36 @@ function App() {
     }
   };
 
+  if (isLoading) {
+    toast('Loading...', {
+      type: 'info',
+      position: toast.POSITION.TOP_CENTER,
+      toastId: loadingToastId,
+    });
+    return <ToastContainer autoClose={3000} containerId="loading-toast-container" />;
+  }
+
+  if (users.length < 1) return '';
+
   return (
     <Container className="App">
-      <ToastContainer autoClose={1000} />
       <Row className="mt-4">
         <Col lg={8}><h2 className="my-4">Search users from randomuser.me</h2></Col>
         <Col lg={4}><CountryChart users={users} /></Col>
       </Row>
-      {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-      <SearchUserForm
-        sortClickHandler={sortClickHandler}
-        usernameFilter={usernameFilterDebounced}
-        userLocationFilter={userLocationFilterDebounced}
-        userDateFilter={userDateFilterDebounced}
-        userPhoneFilter={userPhoneFilterDebounced}
-      />
-      {paginatedUsers.map((user) => (
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      {users && (
+        <SearchUserForm
+          sortClickHandler={sortClickHandler}
+          usernameFilter={usernameFilterDebounced}
+          userLocationFilter={userLocationFilterDebounced}
+          userDateFilter={userDateFilterDebounced}
+          userPhoneFilter={userPhoneFilterDebounced}
+        />
+      )}
+
+      {paginatedUsers && paginatedUsers.map((user) => (
         <UserInfoRow
           key={user.login.uuid}
           user={user}

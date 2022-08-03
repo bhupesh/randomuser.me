@@ -1,4 +1,4 @@
-export const API_URL = 'https://randomuser.me/api/';
+export const API_URL = 'https://randomuser.me/api';
 export const seed = 'randomstring';
 export const noOfUsers = 517;
 
