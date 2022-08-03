@@ -57,7 +57,7 @@ export default function SearchUserForm(props) {
                     <InputGroup.Text id="searchaddon">
                       <i className={styles['search-icon']} />
                     </InputGroup.Text>
-                    <Form.Control type="number" onChange={userPhoneFilter} />
+                    <Form.Control type="text" pattern="[0-9]*" onChange={userPhoneFilter} />
                   </InputGroup>
                 </Form.Group>
               </Col>
