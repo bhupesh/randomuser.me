@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+
+  node-server:
+    build:
+      context: .
+      dockerfile: 'docker/node/Dockerfile'
+    image: randomuser-node:latest
+    container_name: randomuser-server
+    environment:
+      WATCHPACK_POLLING: "true"
+    networks:
+      - frontend
+    volumes:
+      - type: bind
+        source: ./react-app
+        target: /var/www/html
+      - ignore:/var/www/html/node_modules/
+    ports:
+      - 3000:3000
+
+networks:
+  frontend:
+
+volumes:
+  db-data:
+  ignore:
