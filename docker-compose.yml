@@ -15,7 +15,6 @@ services:
       - type: bind
         source: ./react-app
         target: /var/www/html
-      - ignore:/var/www/html/node_modules/
     ports:
       - 3000:3000
 
@@ -24,4 +23,3 @@ networks:
 
 volumes:
   db-data:
-  ignore:
