@@ -8,6 +8,7 @@ services:
     image: randomuser-node:latest
     container_name: randomuser-server
     environment:
+      NODE_ENV: "development"
       WATCHPACK_POLLING: "true"
     networks:
       - frontend
