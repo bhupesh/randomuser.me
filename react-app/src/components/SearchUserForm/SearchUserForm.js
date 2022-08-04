@@ -15,7 +15,7 @@ export default function SearchUserForm(props) {
     <>
       <Form>
         <Row className="text-start">
-          <Col sm={8}>
+          <Col md={8}>
             <Row>
               <Col>
                 <Form.Group className="mb-3" controlId="name">
@@ -63,9 +63,9 @@ export default function SearchUserForm(props) {
               </Col>
             </Row>
           </Col>
-          <Col md={4}>
+          <Col md={{ span: 4, offset: 0 }} xs={{ span: 4, offset: 8 }}>
             <Row>
-              <Col className="text-center offset-sm-8 offset-md-0">
+              <Col md={{ offset: 0 }} className="text-center">
                 <div>Picture</div>
               </Col>
               <Col className="text-center">
